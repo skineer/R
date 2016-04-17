@@ -9,9 +9,7 @@ pollutantmean <- function(directory, pollutant, id=1:332){
         } else {
             valores <- vector()
             for(i in id){
-                print(i)
                 fulldir <- paste(directory,"\\",str_pad(i,3,pad=0), ".csv", sep = "")
-                print(fulldir)
                 data <- read.table(fulldir, sep = ',', header = TRUE)
                 valores <- c(valores, data[, pollutant])
             } 
