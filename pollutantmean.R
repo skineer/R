@@ -1,7 +1,7 @@
 pollutantmean <- function(directory, pollutant, id=1:332){
     library(stringr)
     if(dir.exists(directory) == FALSE){
-        print("This directory does not exists")
+        print("This directory does not exist")
         return(-1)
     } else {
         if(pollutant != 'sulfate' & pollutant != 'nitrate'){
