@@ -1,4 +1,5 @@
 rankhospital <- function(state, outcome, num = "best") {
+    # set the folder
     setwd("C:\\Users\\Renato\\hospital")
     hosp_data <- read.table("outcome-of-care-measures.csv", 
                             sep = ',', header = TRUE, colClasses = "character")
