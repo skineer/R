@@ -30,12 +30,32 @@ rankall <- function(outcome, num = "best") {
         column = 23
     }
     filter <- hosp_data[, c(2, 7, column)]
+    filter2 <- filter[filter$Hospital.30 != "Not Available", ]
+    ordered <- filter2[order(as.numeric(filter2$Hospital.30),
+                             as.character(filter2$Hospital.Name)),]
     # need to split by state in order to calculate the individuals rank
-    split_filter <- split(filter, filter$State)
-    full_list <- list()
-    for(item in split_filter){
-        temp <- item[order(as.numeric(item$Hospital.30),
-                           as.character(item$Hospital.Name)),]
-        full_list <- c(full_list, temp)
+    split_ordered <- split(ordered, ordered$State)
+    if(num == "best"){
+        answer <- lapply(split_ordered, function(df){ df[1,]})
     }
+    if(num == "worst"){
+        answer <- lapply(split_ordered, function(df){ tail(df,1)[1,]})
+    }
+    if(is.numeric(num) == TRUE){
+        answer <- lapply(split_ordered, function(df){ df[num,]})
+    }
+    len <- length(answer)
+    df_answer <- data.frame(hospital = numeric(len), state = character(len),
+                            stringsAsFactors = FALSE)
+    for(i in 1:len){
+        df_answer$hospital[i] <- as.data.frame(answer[i])[1,1]
+        df_answer$state[i] <- toString(as.data.frame(answer[i])[1,2])
+    }
+    return(df_answer)
+    #full_list <- list()
+    #for(item in split_filter){
+    #    temp <- item[order(as.numeric(item$Hospital.30),
+    #                       as.character(item$Hospital.Name)),]
+    #    full_list <- c(full_list, temp)
+    #}
 }
