@@ -1,11 +1,8 @@
-rankhospital <- function(state, outcome, num = "best") {
+rankall <- function(outcome, num = "best") {
     setwd("C:\\Users\\Renato\\hospital")
     hosp_data <- read.table("outcome-of-care-measures.csv", 
                             sep = ',', header = TRUE, colClasses = "character")
-    # test the states possibilities
-    if(state %in% hosp_data$State == FALSE){
-        stop("invalid state")
-    }
+
     # test the outcome possibilities
     if(tolower(outcome) != 'heart attack' & 
        tolower(outcome) != 'heart failure' &
@@ -32,20 +29,13 @@ rankhospital <- function(state, outcome, num = "best") {
     if(tolower(outcome) == "pneumonia"){
         column = 23
     }
-    filter <- hosp_data[hosp_data$State == state, c(2, column)]
-    filter2 <- filter[filter$Hospital.30 != "Not Available",]
-    ofilter <- filter2[order(as.numeric(filter2$Hospital.30),
-                             as.character(filter2$Hospital.Name)),]
-    if(tolower(num) == "best"){
-        return(as.vector(ofilter[1,1]))
-    }
-    if(tolower(num) == "worst"){
-        return(as.vector(tail(ofilter,1)[1,1]))
-    }
-    if(is.numeric(num) == TRUE){
-        return(as.vector(ofilter[num,1]))
-    }
-    if(num > nrow(ofilter)){
-        return(NA)
+    filter <- hosp_data[, c(2, 7, column)]
+    # need to split by state in order to calculate the individuals rank
+    split_filter <- split(filter, filter$State)
+    full_list <- list()
+    for(item in split_filter){
+        temp <- item[order(as.numeric(item$Hospital.30),
+                           as.character(item$Hospital.Name)),]
+        full_list <- c(full_list, temp)
     }
 }
